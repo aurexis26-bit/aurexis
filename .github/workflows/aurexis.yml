@@ -1,22 +1,22 @@
 name: AUREXIS Daily Market Permission
 
 on:
+  workflow_dispatch:
   schedule:
     - cron: "0 12 * * *"   # täglich 12:00 UTC
-  workflow_dispatch:
 
 jobs:
   aurexis:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.10"
 
       - name: Install dependencies
         run: |
