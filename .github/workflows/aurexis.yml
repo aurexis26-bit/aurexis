@@ -1,9 +1,9 @@
 name: AUREXIS Daily Market Permission
 
 on:
-  schedule:
-    - cron: "0 12 * * *"   # täglich 12:00 UTC
   workflow_dispatch:
+  schedule:
+    - cron: "0 6 * * *"
 
 jobs:
   aurexis:
@@ -16,13 +16,16 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.9"
+          python-version: "3.11"
 
       - name: Install dependencies
-        run: pip install requests
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
 
-      - name: Run AUREXIS
+      - name: Run AUREXIS Engine
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        run: python aurexis.py
+        run: |
+          python aurexis.py
