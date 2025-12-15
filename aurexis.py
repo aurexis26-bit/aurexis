@@ -2,32 +2,32 @@ import os
 import requests
 from datetime import datetime
 
-# =========================
-# ENV VARS (GitHub Secrets)
-# =========================
+# ======================
+# CONFIG
+# ======================
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
-# =========================
-# BASIC MARKET LOGIC (DEMO)
-# =========================
-date = datetime.utcnow().strftime("%Y-%m-%d")
+# ======================
+# MARKET LOGIC (DUMMY – stabil)
+# ======================
+date = datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC")
 
-market_permission = "ALLOWED"
-positive = 5
-negative = 2
+market_permission = "GRANTED"
+positive = 3
+negative = 1
 
-# =========================
+# ======================
 # REPORT
-# =========================
+# ======================
 report = f"""
-🟢 AUREXIS — MARKET STATUS
+🛡️ AUREXIS – MARKET STATUS
 
-📅 Date: {date}
+📅 {date}
 
 🟢 Market Permission: {market_permission}
-📈 Positive Assets: {positive}
-📉 Negative Assets: {negative}
+🟢 Positive Assets: {positive}
+🔴 Negative Assets: {negative}
 
 Policy:
 Capital moves only with permission.
@@ -36,24 +36,22 @@ Disclaimer:
 This is not investment advice.
 """
 
-# =========================
+# ======================
 # TELEGRAM SEND
-# =========================
-if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHAT_ID:
-    raise ValueError("Missing TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID")
-
-response = requests.post(
-    f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage",
-    json={
+# ======================
+if TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID:
+    url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
+    payload = {
         "chat_id": TELEGRAM_CHAT_ID,
         "text": report
-    },
-    timeout=10
-)
+    }
 
-if response.status_code != 200:
-    raise RuntimeError(f"Telegram error: {response.text}")
+    r = requests.post(url, json=payload, timeout=10)
+    print("Telegram status:", r.status_code)
+else:
+    print("Telegram credentials missing")
 
-print("Message sent successfully")
+# ======================
+# LOCAL OUTPUT
+# ======================
 print(report)
-
